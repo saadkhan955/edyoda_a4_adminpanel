@@ -36,7 +36,7 @@ const HorizontalBarChart = () => {
           ) {
             const performanceData = parsedData.dasbhoardPage.performance;
             setPerformanceData(performanceData);
-            console.log(performanceData);
+            //console.log(performanceData);
           }
         }
       } catch (error) {
@@ -72,7 +72,8 @@ const HorizontalBarChart = () => {
           '#DB9C3F',
           '#3889FC'
         ],
-        borderWidth: 0
+        borderWidth: 0,
+        color: 'white',
       },
     ],
   };
@@ -87,14 +88,30 @@ const HorizontalBarChart = () => {
       x: {
         ticks: {
           beginAtZero: true,
+          color: 'white'
+        },
+      },
+      y: {
+        ticks: {
+          color: 'white'
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: 'white', // Set the label text color to white
         },
       },
     },
   };
 
   return (
-    <div>
+    <div className='sm:w-full md:w-full lg:w-1/2 xl:w-1/2 px-4 mb-[30px]'>
+      <div className='bg-[#435c70] p-[40px] min-h-[350px] max-h-[450px] h-full shadow-[1px_1px_5px_0_#455c71]'>
+      <h2 className='mb-[30px] text-white font-bold	 text-[1.1rem]'>Performance</h2>
       <Bar data={chartData} options={chartOptions} />
+      </div>
     </div>
   );
 };

@@ -2,10 +2,10 @@ import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import DashboardPage from './pages/Dashboard.jsx'
 import LoginPage from './pages/LoginPage'
-import ProductsPage from './pages/ProductsPage'
 import AddNewProductPage from './pages/AddNewProductPage'
 import AccountsPage from './pages/AccountsPage'
 import Navbar from './components/Navbar'
+import ProductManagerPage from './pages/ProductManagerPage.jsx'
 
 const App = () => {
   return (
@@ -14,7 +14,7 @@ const App = () => {
     <Routes>
       <Route path='/' element={<DashboardPage/>} />
       <Route path='/login' element={<LoginPage/>} />
-      <Route path='/products' element={<ProductsPage/>} />
+      <Route path='/products' element={<ProductManagerPage/>} />
       <Route path='/add_new_product' element={<AddNewProductPage/>} />
       <Route path='/accounts' element={<AccountsPage/>} />
     </Routes>

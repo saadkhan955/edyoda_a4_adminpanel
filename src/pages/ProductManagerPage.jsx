@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import CheckmarkSvg from '../assets/CheckmarkSvg';
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -15,21 +14,11 @@ const ProductsPage = () => {
         const storedData = localStorage.getItem('projectData');
         if (storedData) {
           const parsedData = JSON.parse(storedData);
-          if (
-            parsedData &&
-            parsedData.productsPage &&
-            parsedData.productsPage.products
-          ) {
-            const productData = parsedData.productsPage.products;
-            setProducts(productData);
+          if (parsedData?.productsPage?.products) {
+            setProducts(parsedData.productsPage.products);
           }
-          if (
-            parsedData &&
-            parsedData.productsPage &&
-            parsedData.productsPage.categories
-          ) {
-            const categoryData = parsedData.productsPage.categories;
-            setCategories(categoryData);
+          if (parsedData?.productsPage?.categories) {
+            setCategories(parsedData.productsPage.categories);
           }
         }
       } catch (error) {
@@ -41,14 +30,10 @@ const ProductsPage = () => {
   }, []);
 
   const toggleProductSelection = (index) => {
-    const selectedProductIndex = selectedProducts.indexOf(index);
-    if (selectedProductIndex > -1) {
-      const newSelectedProducts = [...selectedProducts];
-      newSelectedProducts.splice(selectedProductIndex, 1);
-      setSelectedProducts(newSelectedProducts);
-    } else {
-      setSelectedProducts([...selectedProducts, index]);
-    }
+    const newSelectedProducts = selectedProducts.includes(index)
+      ? selectedProducts.filter((i) => i !== index)
+      : [...selectedProducts, index];
+    setSelectedProducts(newSelectedProducts);
   };
 
   const deleteProduct = (index) => {
@@ -64,78 +49,94 @@ const ProductsPage = () => {
     setSelectedProducts([]);
   };
 
+  const deleteCategory = (index) => {
+    const newCategories = [...categories];
+    newCategories.splice(index, 1);
+    setCategories(newCategories);
+  };
+
   const onAddHandler = () => {
     const newProduct = {
       category: 'testing 1',
       unitSold: 500,
       stock: 100,
       expireDate: '05 March 2024',
-      name: 'Foot wear',
+      name: 'Footwear',
     };
     setProducts([...products, newProduct]);
   };
 
   return (
-    <div className='bg-[#4e657a] h-[100vh] py-8 flex justify-center gap-10'>
-      <div className='bg-[#435c70] w-[735px] p-5 h-[700px] flex flex-col gap-4'>
-        <div className='h-[80%] overflow-auto'>
-          <div className='grid grid-cols-6 text-white bg-[#486177] p-3 font-bold'>
-            <div className='w-fit'></div>
-            <div className='col-span-1'>PRODUCT NAME</div>
-            <div className='col-span-1'>UNIT SOLD</div>
-            <div className='col-span-1'>IN STOCK</div>
-            <div className='col-span-1'>EXPIRE DATE</div>
-            <div className='col-span-1'></div>
+    <div className='container mx-auto sm:px-4 mt-12'>
+      <div className='flex flex-wrap tm-content-row'>
+        <div className="sm:w-full pr-4 pl-4 md:w-full lg:w-2/3 xl:w-2/3 tm-block-col">
+          <div className="tm-bg-primary-dark tm-block tm-block-products">
+            <div className="tm-product-table-container">
+              <table className='w-full table table-hover tm-table-small tm-product-table'>
+                <thead className='sticky top-0 z-10'>
+                  <tr>
+                    <th>&nbsp;</th>
+                    <th>PRODUCT NAME</th>
+                    <th>UNIT SOLD</th>
+                    <th>IN STOCK</th>
+                    <th>EXPIRE DATE</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody className='divide-y divide-slate-700 !bg-[#50697f]'>
+                  {products.map((item, i) => (
+                    <tr key={i}>
+                      <td>
+                        <label>
+                          <input type="checkbox" onChange={() => toggleProductSelection(i)} checked={selectedProducts.includes(i)} />
+                        </label>
+                      </td>
+                      <td className='tm-product-name'>{item.name}</td>
+                      <td>{item.unitSold}</td>
+                      <td>{item.stock}</td>
+                      <td>{item.expireDate}</td>
+                      <td>
+                        <div className='tm-product-delete-link'>
+                          <FontAwesomeIcon icon={faTrashAlt} onClick={() => deleteProduct(i)} className='tm-product-delete-icon cursor-pointer' />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <button onClick={onAddHandler} className='btn btn-primary btn-block uppercase mb-3 w-full'>
+              ADD NEW PRODUCT
+            </button>
+            <button onClick={onDeleteSelectedProducts} className='btn btn-primary btn-block uppercase w-full'>
+              DELETE SELECTED PRODUCTS
+            </button>
           </div>
-          {products.map((item, i) => (
-            <div key={i} className='grid grid-cols-6 text-white bg-[#486177] p-3 font-bold justify-center items-center'>
-              <div className='w-fit relative'>
-                <input
-                  className='w-[24px] h-[24px] cursor-pointer appearance-none bg-[#394e64] relative rounded-full bg-center transition-all duration-[100ms] ease-linear'
-                  type='checkbox'
-                  onChange={() => toggleProductSelection(i)}
-                  checked={selectedProducts.includes(i)}
-                />
-                {selectedProducts.includes(i) && (
-                  <div className='absolute h-[24px] w-[24px] top-[1px] -left-[2px]'>
-                    <CheckmarkSvg/>
-                  </div>
-                )}
-              </div>
-              <div className='col-span-1 flex items-center gap-4'>
-                <p>{item.name}</p>
-              </div>
-              <div className='col-span-1'>{item.unitSold}</div>
-              <div className='col-span-1'>{item.stock}</div>
-              <div className='col-span-1'>{item.expireDate}</div>
-              <div className='col-span-1 rounded-full bg-[#394e64] inline-flex h-[40px] w-[40px] p-[10px] text-center justify-center items-center'>
-                <FontAwesomeIcon
-                  icon={faTrashAlt}
-                  onClick={() => deleteProduct(i)}
-                  className='cursor-pointer'
-                />
-              </div>
-            </div>
-          ))}
         </div>
-        <button onClick={onAddHandler} className='bg-[#f5a623] text-center w-full text-white text-lg font-bold p-2'>
-          ADD NEW PRODUCT
-        </button>
-        <button onClick={onDeleteSelectedProducts} className='bg-[#f5a623] w-full text-white text-lg font-bold p-2'>
-          DELETE SELECTED PRODUCTS
-        </button>
-      </div>
-      <div className='bg-[#435c70] w-[350px] p-5 h-[700px] flex flex-col gap-4'>
-        <h4 className='text-lg font-bold text-white'>Product Categories</h4>
-        <div className='h-[80%] overflow-auto'>
-          {categories.map((item, i) => (
-            <div className='text-white bg-[#486177] p-3 font-bold' key={i}>
-              {item}
+
+        <div className='sm:w-full md:w-full lg:w-1/3 xl:w-1/3 tm-block-col pr-4 pl-4'>
+          <div className="tm-bg-primary-dark tm-block tm-block-product-categories">
+            <h2 className='tm-block-title'>Product Categories</h2>
+            <div className='tm-product-table-container'>
+              <table className="w-full table tm-table-small tm-product-table">
+                <tbody>
+                  {categories.map((category, i) => (
+                    <tr key={i}>
+                      <td>{category}</td>
+                      <td>
+                        <div className='tm-product-delete-link'>
+                          <FontAwesomeIcon icon={faTrashAlt} onClick={() => deleteCategory(i)} className='tm-product-delete-icon cursor-pointer' />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
-        </div>
-        <div>
-          <button className='bg-[#f5a623] w-full text-white text-lg font-bold p-2'>ADD NEW CATEGORY</button>
+            <div>
+              <button className='btn btn-primary btn-block uppercase mb-3 w-full'>ADD NEW CATEGORY</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

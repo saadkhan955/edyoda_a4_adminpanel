@@ -6,6 +6,7 @@ import AddNewProductPage from './pages/AddNewProductPage'
 import AccountsPage from './pages/AccountsPage'
 import Navbar from './components/Navbar'
 import ProductManagerPage from './pages/ProductManagerPage.jsx'
+import Footer from './components/Footer.jsx'
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
       <Route path='/add_new_product' element={<AddNewProductPage/>} />
       <Route path='/accounts' element={<AccountsPage/>} />
     </Routes>
+    <Footer/>
     </BrowserRouter>
   )
 }

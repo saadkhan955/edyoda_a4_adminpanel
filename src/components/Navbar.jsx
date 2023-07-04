@@ -1,30 +1,39 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/userSlice';
-import NavButton from './NavButton'; // Assuming NavButton is extracted to its own component file
+import NavButton from './NavButton';
 
 const Navbar = () => {
   const { isLoggedIn, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const handleLogout = () => {
+    // Dispatch the logout action
+    dispatch(logout());
+  };
+
   return (
-    <div className="navbar h-[100px] bg-[#567086] px-60 flex items-center justify-between">
-      <h1 className="text-white text-2xl font-bold">PRODUCT ADMIN</h1>
-      <div className="flex">
-        <NavButton link="/" title="Dashboard" />
-        <NavButton link="/reports" title="Reports" />
-        <NavButton link="/products" title="Products" />
-        <NavButton link="/accounts" title="Account" />
-        <NavButton link="/settings" title="Settings" />
+    <div className="navbar navbar-expand-xl">
+      <div className="flex flex-wrap h-full items-center justify-between mx-auto px-[15px] max-w-[1140px]">
+        <a href="/" className="navbar-brand">
+          <h1 className="tm-site-title mb-0">PRODUCT ADMIN</h1>
+        </a>
+        <div className="flex">
+          <NavButton link="/" title="Dashboard" />
+          <NavButton link="/reports" title="Reports" />
+          <NavButton link="/products" title="Products" />
+          <NavButton link="/accounts" title="Account" />
+          <NavButton link="/settings" title="Settings" />
+        </div>
+        {isLoggedIn && (
+          <button
+            onClick={handleLogout}
+            className="text-white text-lg font-bold"
+          >
+            {`${user.firstName} ${user.lastName} logout`}
+          </button>
+        )}
       </div>
-      {isLoggedIn && (
-        <button
-          onClick={() => dispatch(logout())}
-          className="text-white text-lg font-bold"
-        >
-          {`${user.firstName} ${user.lastName} logout`}
-        </button>
-      )}
     </div>
   );
 };
